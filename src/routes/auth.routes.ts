@@ -22,9 +22,7 @@ router.post(
 	'/signin',
 	[
 		body('email', 'A valid email is required').isEmail(),
-		body('password', 'Password is required').isLength({
-			min: 8,
-		}),
+		body('password', 'Password is required').not().isEmpty(),
 		checkError,
 	],
 	signin

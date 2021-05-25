@@ -21,7 +21,7 @@ export const signup = async (req: Request, res: Response) => {
 		});
 	} catch (err) {
 		console.log('Signup error:', err);
-		res.status(501).json({
+		res.status(500).json({
 			success: false,
 			msg: 'Something went wrong. Try later please',
 		});
@@ -68,7 +68,6 @@ export const signin = async (req: Request, res: Response) => {
 export const renewToken = async (req: Request, res: Response) => {
 	try {
 		const userToken = req.user as IUser;
-		console.log(userToken);
 		const token = await createToken(userToken);
 		const user = await User.findById(userToken._id);
 		return res.json({

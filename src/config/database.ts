@@ -4,6 +4,7 @@ import config from '.';
 mongoose.connect(config.DB_URI, {
 	useNewUrlParser: true,
 	useCreateIndex: true,
+	useFindAndModify: false,
 });
 
 const connection = mongoose.connection;
