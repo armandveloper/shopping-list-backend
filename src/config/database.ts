@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
-import config from '.';
+import config from './';
 
 mongoose.connect(config.DB_URI, {
 	useNewUrlParser: true,
 	useCreateIndex: true,
+	useUnifiedTopology: true,
 	useFindAndModify: false,
+	autoIndex: false,
 });
 
 const connection = mongoose.connection;
