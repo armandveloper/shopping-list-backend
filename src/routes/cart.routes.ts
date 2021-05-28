@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { body, param } from 'express-validator';
 import checkError from '../middlewares/checkError';
 import {
+	cancelCart,
+	completeCart,
 	createCart,
 	deleteCart,
 	getCart,
@@ -70,6 +72,18 @@ router.delete(
 	'/:id',
 	[param('id', 'A valid cart id is required').isMongoId(), checkError],
 	deleteCart
+);
+
+router.delete(
+	'/:id/complete',
+	[param('id', 'A valid cart id is required').isMongoId(), checkError],
+	completeCart
+);
+
+router.delete(
+	'/:id/cancel',
+	[param('id', 'A valid cart id is required').isMongoId(), checkError],
+	cancelCart
 );
 
 export default router;

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Cart from '../models/Cart';
+import History from '../models/History';
 import { IUser } from '../models/User';
 
 export const createCart = async (req: Request, res: Response) => {
@@ -66,6 +67,7 @@ export const deleteCart = async (req: Request, res: Response) => {
 	const { _id: user } = req.user as IUser;
 	try {
 		const cart = await Cart.findOneAndDelete({ _id: id, user });
+		console.log(cart);
 		if (!cart) {
 			return res.status(404).json({
 				sucess: false,
@@ -75,6 +77,58 @@ export const deleteCart = async (req: Request, res: Response) => {
 		res.json({ success: true, msg: 'Cart deleted' });
 	} catch (err) {
 		console.log('Delete cart error:', err);
+		res.status(500).json({
+			success: false,
+			msg: 'Something went wrong. Try later please',
+		});
+	}
+};
+
+export const completeCart = async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const { _id: user } = req.user as IUser;
+	try {
+		const cart = await Cart.findOneAndDelete({ _id: id, user });
+		if (!cart) {
+			return res.status(404).json({
+				sucess: false,
+				msg: 'The cart could not be mark as completed. Possibly does not exist or does not have sufficient permissions to perform this action.',
+			});
+		}
+		const { _id, __v, ...data } = cart._doc;
+		const history = new History(data);
+		await history.save();
+		res.json({ success: true, msg: 'Cart completed', history });
+	} catch (err) {
+		console.log('Complete cart error:', err);
+		res.status(500).json({
+			success: false,
+			msg: 'Something went wrong. Try later please',
+		});
+	}
+};
+
+export const cancelCart = async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const { _id: user } = req.user as IUser;
+	try {
+		const cart = await Cart.findOneAndDelete({ _id: id, user });
+		if (!cart) {
+			return res.status(404).json({
+				sucess: false,
+				msg: 'The cart could not be cancelled. Possibly does not exist or does not have sufficient permissions to perform this action.',
+			});
+		}
+		const { _id, __v, ...data } = cart._doc;
+		const history = new History({
+			...data,
+			completed: false,
+			cancelled: true,
+		});
+		await history.save();
+		res.json({ success: true, msg: 'Cart cancelled', history });
+	} catch (err) {
+		console.log('Cancel cart error:', err);
 		res.status(500).json({
 			success: false,
 			msg: 'Something went wrong. Try later please',
