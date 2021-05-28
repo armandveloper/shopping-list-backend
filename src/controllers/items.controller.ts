@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { IUser } from '../models/User';
 import Item from '../models/Item';
+import Category from '../models/Category';
+
 
 export const createItem = async (req: Request, res: Response) => {
 	try {
@@ -19,8 +21,9 @@ export const createItem = async (req: Request, res: Response) => {
 export const getItems = async (req: Request, res: Response) => {
 	const { _id: user } = req.user as IUser;
 	try {
+		const categories = await Category.find({ user });
 		const items = await Item.find({ user });
-		res.json({ success: true, items, msg: 'Items retried' });
+		res.json({ success: true, items, categories, msg: 'Items retried' });
 	} catch (err) {
 		console.log('Read items error:', err);
 		res.status(500).json({
