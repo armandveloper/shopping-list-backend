@@ -51,7 +51,7 @@ export const updateItem = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const { _id: user } = req.user as IUser;
 
-	const { user: _, ...data } = req.body;
+	const { user: _, _id, ...data } = req.body;
 
 	try {
 		const item = await Item.findOneAndUpdate(

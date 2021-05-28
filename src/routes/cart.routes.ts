@@ -1,0 +1,75 @@
+import { Router } from 'express';
+import { body, param } from 'express-validator';
+import checkError from '../middlewares/checkError';
+import {
+	createCart,
+	deleteCart,
+	getCart,
+	updateCart,
+} from '../controllers/cart.controller';
+
+const router = Router();
+
+router.post(
+	'/',
+	[
+		body('name', 'The cart name is required').not().isEmpty(),
+		body('user', 'A valid user id is required').isMongoId(),
+		body('items', 'The item list must have one item at least').isArray({
+			min: 1,
+		}),
+		body('items.*.name', 'The item name is required').not().isEmpty(),
+		body(
+			'items.*.quantity',
+			'The item quantity must be a number greater than or equal to 1'
+		).isInt({ min: 1 }),
+		body('items.*.category', 'The item category is required')
+			.not()
+			.isEmpty(),
+		body('items.*.completed', 'The item completed state must be a boolean')
+			.isBoolean()
+			.optional({ nullable: true }),
+		body('items.*.item', 'A valid item id is required').isMongoId(),
+		checkError,
+	],
+	createCart
+);
+
+router.get(
+	'/:id',
+	[param('id', 'A valid cart id is required').isMongoId(), checkError],
+	getCart
+);
+
+router.put(
+	'/:id',
+	[
+		body('name', 'The cart name is required').not().isEmpty(),
+		body('user', 'A valid user id is required').isMongoId(),
+		body('items', 'The item list must have one item at least').isArray({
+			min: 1,
+		}),
+		body('items.*.name', 'The item name is required').not().isEmpty(),
+		body(
+			'items.*.quantity',
+			'The item quantity must be a number greater than or equal to 1'
+		).isInt({ min: 1 }),
+		body('items.*.category', 'The item category is required')
+			.not()
+			.isEmpty(),
+		body('items.*.completed', 'The item completed state must be a boolean')
+			.isBoolean()
+			.optional({ nullable: true }),
+		body('items.*.item', 'A valid item id is required').isMongoId(),
+		checkError,
+	],
+	updateCart
+);
+
+router.delete(
+	'/:id',
+	[param('id', 'A valid cart id is required').isMongoId(), checkError],
+	deleteCart
+);
+
+export default router;
