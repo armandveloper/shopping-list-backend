@@ -14,10 +14,13 @@ export const signup = async (req: Request, res: Response) => {
 		const user = new User({ email });
 		await user.hashPassword(password);
 		await user.save();
+		const token = createToken(user);
+
 		res.status(201).json({
 			success: true,
 			msg: 'User signup successfully',
 			user,
+			token,
 		});
 	} catch (err) {
 		console.log('Signup error:', err);
