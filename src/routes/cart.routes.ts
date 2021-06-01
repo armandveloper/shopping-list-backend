@@ -6,7 +6,8 @@ import {
 	completeCart,
 	createCart,
 	deleteCart,
-	getCart,
+	getCartById,
+	getCartByUser,
 	updateCart,
 } from '../controllers/cart.controller';
 
@@ -37,10 +38,12 @@ router.post(
 	createCart
 );
 
+router.get('/', getCartByUser);
+
 router.get(
 	'/:id',
 	[param('id', 'A valid cart id is required').isMongoId(), checkError],
-	getCart
+	getCartById
 );
 
 router.put(

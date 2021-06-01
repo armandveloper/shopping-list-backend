@@ -3,7 +3,6 @@ import { IUser } from '../models/User';
 import Item from '../models/Item';
 import Category from '../models/Category';
 
-
 export const createItem = async (req: Request, res: Response) => {
 	try {
 		const item = new Item(req.body);
@@ -86,7 +85,7 @@ export const deleteItem = async (req: Request, res: Response) => {
 		});
 		if (!item) {
 			return res.status(404).json({
-				sucess: false,
+				success: false,
 				msg: 'The item could not be deleted. Possibly does not exist or does not have sufficient permissions to perform this action.',
 			});
 		}

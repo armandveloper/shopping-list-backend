@@ -17,14 +17,34 @@ export const createCart = async (req: Request, res: Response) => {
 	}
 };
 
-export const getCart = async (req: Request, res: Response) => {
+export const getCartByUser = async (req: Request, res: Response) => {
+	const { _id: user } = req.user as IUser;
+	try {
+		const cart = await Cart.findOne({ user });
+		if (!cart) {
+			return res.status(404).json({
+				success: false,
+				msg: 'The cart could not be retried. Possibly does not exist or does not have sufficient permissions to perform this action.',
+			});
+		}
+		res.json({ success: true, msg: 'Cart retried', cart });
+	} catch (err) {
+		console.log('Get cart error:', err);
+		res.status(500).json({
+			success: false,
+			msg: 'Something went wrong. Try later please',
+		});
+	}
+};
+
+export const getCartById = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const { _id: user } = req.user as IUser;
 	try {
 		const cart = await Cart.findOne({ _id: id, user });
 		if (!cart) {
 			return res.status(404).json({
-				sucess: false,
+				success: false,
 				msg: 'The cart could not be retried. Possibly does not exist or does not have sufficient permissions to perform this action.',
 			});
 		}
@@ -47,7 +67,7 @@ export const updateCart = async (req: Request, res: Response) => {
 		});
 		if (!cart) {
 			return res.status(404).json({
-				sucess: false,
+				success: false,
 				msg: 'The cart could not be updated. Possibly does not exist or does not have sufficient permissions to perform this action.',
 			});
 		}
@@ -70,7 +90,7 @@ export const deleteCart = async (req: Request, res: Response) => {
 		console.log(cart);
 		if (!cart) {
 			return res.status(404).json({
-				sucess: false,
+				success: false,
 				msg: 'The cart could not be deleted. Possibly does not exist or does not have sufficient permissions to perform this action.',
 			});
 		}
@@ -91,7 +111,7 @@ export const completeCart = async (req: Request, res: Response) => {
 		const cart = await Cart.findOneAndDelete({ _id: id, user });
 		if (!cart) {
 			return res.status(404).json({
-				sucess: false,
+				success: false,
 				msg: 'The cart could not be mark as completed. Possibly does not exist or does not have sufficient permissions to perform this action.',
 			});
 		}
@@ -115,7 +135,7 @@ export const cancelCart = async (req: Request, res: Response) => {
 		const cart = await Cart.findOneAndDelete({ _id: id, user });
 		if (!cart) {
 			return res.status(404).json({
-				sucess: false,
+				success: false,
 				msg: 'The cart could not be cancelled. Possibly does not exist or does not have sufficient permissions to perform this action.',
 			});
 		}

@@ -49,4 +49,4 @@ const historySchema = new Schema<IHistory>({
 	],
 });
 
-export default model('History', historySchema);
+export default model<IHistory>('History', historySchema);

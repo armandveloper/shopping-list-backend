@@ -1,21 +1,20 @@
 import mongoose from 'mongoose';
 import config from './';
 
-mongoose.connect(config.DB_URI, {
-	useNewUrlParser: true,
-	useCreateIndex: true,
-	useUnifiedTopology: true,
-	useFindAndModify: false,
-	autoIndex: false,
-});
+const connectDB = async () => {
+	try {
+		await mongoose.connect(config.DB_URI, {
+			useNewUrlParser: true,
+			useCreateIndex: true,
+			useUnifiedTopology: true,
+			useFindAndModify: false,
+			autoIndex: false,
+		});
+		console.log('Mongodb Connection established');
+	} catch (err) {
+		console.log('Mongodb connection error:', err);
+		process.exit(1);
+	}
+};
 
-const connection = mongoose.connection;
-
-connection.once('open', () => {
-	console.log('Mongodb Connection established');
-});
-
-connection.on('error', (err) => {
-	console.log('Mongodb connection error:', err);
-	process.exit(1);
-});
+connectDB();
