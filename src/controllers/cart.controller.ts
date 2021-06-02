@@ -81,7 +81,6 @@ export const updateCart = async (req: Request, res: Response) => {
 	}
 };
 
-// TODO: Al eliminar pasar el carrito al historial
 export const deleteCart = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const { _id: user } = req.user as IUser;

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { param } from 'express-validator';
+import { param, query } from 'express-validator';
 import {
 	deleteHistoryEntry,
 	getUserHistory,
@@ -11,7 +11,18 @@ const router = Router();
 
 router.get(
 	'/:id',
-	[param('id', 'A valid user id is required').isMongoId(), checkError],
+	[
+		param('id', 'A valid user id is required').isMongoId(),
+		query('offset', 'Offset must be a positive number')
+			.toInt()
+			.isInt({ min: 0 })
+			.optional({ nullable: true }),
+		query('limit', 'Limit must be a positive number')
+			.toInt()
+			.isInt({ min: 1 })
+			.optional({ nullable: true }),
+		checkError,
+	],
 	getUserHistory
 );
 
