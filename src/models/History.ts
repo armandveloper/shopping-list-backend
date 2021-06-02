@@ -6,47 +6,52 @@ export interface IHistory extends ICart {
 	cancelled: boolean;
 }
 
-const historySchema = new Schema<IHistory>({
-	name: {
-		type: String,
-		required: true,
-	},
-	completed: {
-		type: Boolean,
-		default: true,
-	},
-	cancelled: {
-		type: Boolean,
-		default: false,
-	},
-	user: {
-		type: Schema.Types.ObjectId,
-		ref: 'User',
-	},
-	items: [
-		{
-			name: {
-				type: String,
-				required: true,
-			},
-			quantity: {
-				type: Number,
-				required: true,
-			},
-			category: {
-				type: String,
-				required: true,
-			},
-			completed: {
-				type: Boolean,
-				default: false,
-			},
-			item: {
-				type: Schema.Types.ObjectId,
-				ref: 'Item',
-			},
+const historySchema = new Schema<IHistory>(
+	{
+		name: {
+			type: String,
+			required: true,
 		},
-	],
-});
+		completed: {
+			type: Boolean,
+			default: true,
+		},
+		cancelled: {
+			type: Boolean,
+			default: false,
+		},
+		user: {
+			type: Schema.Types.ObjectId,
+			ref: 'User',
+		},
+		items: [
+			{
+				name: {
+					type: String,
+					required: true,
+				},
+				quantity: {
+					type: Number,
+					required: true,
+				},
+				category: {
+					type: String,
+					required: true,
+				},
+				completed: {
+					type: Boolean,
+					default: false,
+				},
+				item: {
+					type: Schema.Types.ObjectId,
+					ref: 'Item',
+				},
+			},
+		],
+	},
+	{
+		timestamps: true,
+	}
+);
 
 export default model<IHistory>('History', historySchema);
