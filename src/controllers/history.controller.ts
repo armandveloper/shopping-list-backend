@@ -15,7 +15,7 @@ export const getUserHistory = async (
 	const { limit = 5, offset = 0 } = req.query;
 	try {
 		const countPromise = History.find({ user: id }).count();
-		const historyPromise = await History.find({ user: id }, null, {
+		const historyPromise = History.find({ user: id }, null, {
 			skip: offset,
 			limit,
 			sort: {
