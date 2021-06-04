@@ -8,6 +8,21 @@ import History from '../models/History';
 export const getUserStatistics = async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const user = mongoose.Types.ObjectId(id);
+	const monthlySummary: { _id: number; count: number }[] = [
+		{ _id: 1, count: 0 },
+		{ _id: 2, count: 0 },
+		{ _id: 3, count: 0 },
+		{ _id: 4, count: 0 },
+		{ _id: 5, count: 0 },
+		{ _id: 6, count: 0 },
+		{ _id: 7, count: 0 },
+		{ _id: 8, count: 0 },
+		{ _id: 9, count: 0 },
+		{ _id: 10, count: 0 },
+		{ _id: 11, count: 0 },
+		{ _id: 12, count: 0 },
+	];
+
 	try {
 		const totalPromise = History.aggregate([
 			{ $match: { user } },
@@ -48,13 +63,39 @@ export const getUserStatistics = async (req: Request, res: Response) => {
 			{ $limit: 3 },
 		]);
 
-		const [total, topItems, topCategories] = await Promise.all([
-			totalPromise,
-			topItemsPromise,
-			topCategoriesPromise,
+		const itemsByMonthPromise = History.aggregate([
+			{ $match: { user } },
+			{ $project: { _id: 0, items: 1, month: { $month: '$createdAt' } } },
+			{ $unwind: '$items' },
+			{
+				$group: {
+					_id: '$month',
+					count: { $sum: '$items.quantity' },
+				},
+			},
 		]);
 
-		res.json({ success: true, total, topItems, topCategories });
+		const [total, topItems, topCategories, itemsByMonth] =
+			await Promise.all([
+				totalPromise,
+				topItemsPromise,
+				topCategoriesPromise,
+				itemsByMonthPromise,
+			]);
+
+		// Coloca los meses que vengan de la bd
+		itemsByMonth.forEach((item) => {
+			monthlySummary[item._id - 1] = item;
+		});
+
+		res.json({
+			success: true,
+			msg: 'User Statistics Retried',
+			total,
+			topItems,
+			topCategories,
+			monthlySummary,
+		});
 	} catch (err) {
 		console.log('Get user statistics error:', err);
 		res.status(500).json({
