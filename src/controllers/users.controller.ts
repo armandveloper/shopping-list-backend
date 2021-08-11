@@ -42,7 +42,11 @@ export const getUserStatistics = async (req: Request, res: Response) => {
 			{
 				$group: {
 					_id: '$items.name',
-					count: { $sum: '$items.quantity' },
+					count: {
+						$sum: {
+							$multiply: ['$items.quantity', 1],
+						},
+					},
 				},
 			},
 			{ $sort: { count: -1, _id: 1 } },
@@ -56,7 +60,9 @@ export const getUserStatistics = async (req: Request, res: Response) => {
 			{
 				$group: {
 					_id: '$items.category',
-					count: { $sum: 1 },
+					count: {
+						$multiply: [1, '$items.quantity'],
+					},
 				},
 			},
 			{ $sort: { count: -1, _id: 1 } },
