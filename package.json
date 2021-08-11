@@ -3,13 +3,22 @@
 	"version": "1.0.0",
 	"description": "Backend for the Shopping List App",
 	"main": "index.js",
+	"engines": {
+		"node": "14.5.0"
+	},
 	"scripts": {
 		"dev": "nodemon src/index.ts",
 		"start": "node build/index",
-		"build": "tsc --project ./"
+		"build": "tsc --project ./",
+		"postinstall": "npm run build"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [
+		"Node",
+		"Express",
+		"API",
+		"TypeScript"
+	],
+	"author": "Armando Cruz",
 	"license": "ISC",
 	"dependencies": {
 		"bcrypt": "^5.0.1",
